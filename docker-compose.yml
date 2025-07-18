@@ -1,0 +1,136 @@
+services:
+  wallet-service:
+    image: wallet-service:latest
+    container_name: wallet-service
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - mysql
+      - rabbitmq
+      - kafka
+      - kibana
+      - elasticsearch
+    ports:
+      - "8088:8088"  # Adjust port as needed
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MYSQL_URL=jdbc:mysql://mysql:3307/wallet-db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elastic-network
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=wallet-db
+      - MYSQL_USER=wallet_user
+      - MYSQL_PASSWORD=wallet_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - app-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # Set to true for production, and configure passwords
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # Allocate appropriate memory
+    ports:
+      - "9200:9200"
+      - "9300:9300" # Internal communication port, useful for multi-node clusters
+    volumes:
+      - esdata:/usr/share/elasticsearch/data # Persist Elasticsearch data
+    networks:
+      - elastic-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.18.3
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # Connects to the Elasticsearch service by its name
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch # Ensures Elasticsearch starts before Kibana
+    networks:
+      - elastic-network
+
+volumes:
+  esdata:
+    driver: local
+  redis_data:
+    driver: local
+  mysql_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  kafka_data:
+    driver: local
+
+networks:
+  elastic-network:
+    driver: bridge
+  app-network:
+    driver: bridge

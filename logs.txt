@@ -1,0 +1,78 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] wallet-service                                                     [pom]
+[INFO] shared                                                             [jar]
+[INFO] model                                                              [jar]
+[INFO] infra                                                              [jar]
+[INFO] core                                                               [jar]
+[INFO] security                                                           [jar]
+[INFO] web                                                                [jar]
+[INFO] 
+[INFO] -------------------< com.interswitch:wallet-service >-------------------
+[INFO] Building wallet-service 0.0.1-SNAPSHOT                             [1/7]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ wallet-service ---
+[INFO] 
+[INFO] --- spring-boot:3.5.3:repackage (repackage) @ wallet-service ---
+[INFO] 
+[INFO] --- install:3.1.4:install (default-install) @ wallet-service ---
+[INFO] Installing /home/shadrach/Desktop/assessments/wallet-service/pom.xml to /home/shadrach/.m2/repository/com/interswitch/wallet-service/0.0.1-SNAPSHOT/wallet-service-0.0.1-SNAPSHOT.pom
+[INFO] 
+[INFO] -----------------------< com.interswitch:shared >-----------------------
+[INFO] Building shared 0.0.1-SNAPSHOT                                     [2/7]
+[INFO]   from shared/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ shared ---
+[INFO] Deleting /home/shadrach/Desktop/assessments/wallet-service/shared/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ shared ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ shared ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ shared ---
+[INFO] skip non existing resourceDirectory /home/shadrach/Desktop/assessments/wallet-service/shared/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ shared ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ shared ---
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ shared ---
+[INFO] Building jar: /home/shadrach/Desktop/assessments/wallet-service/shared/target/shared-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.3:repackage (repackage) @ shared ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for wallet-service 0.0.1-SNAPSHOT:
+[INFO] 
+[INFO] wallet-service ..................................... SUCCESS [  1.447 s]
+[INFO] shared ............................................. FAILURE [ 13.590 s]
+[INFO] model .............................................. SKIPPED
+[INFO] infra .............................................. SKIPPED
+[INFO] core ............................................... SKIPPED
+[INFO] security ........................................... SKIPPED
+[INFO] web ................................................ SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.750 s
+[INFO] Finished at: 2025-07-16T13:40:22+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.3:repackage (repackage) on project shared: Execution repackage of goal org.springframework.boot:spring-boot-maven-plugin:3.5.3:repackage failed: Unable to find main class -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :shared
